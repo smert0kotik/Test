@@ -1,17 +1,18 @@
 package org.example;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.time.Duration;
+import java.util.List;
 
 public class BaseTest {
     public static WebDriver webDriver;
@@ -25,7 +26,6 @@ public class BaseTest {
         options.setPageLoadTimeout(Duration.ofSeconds(10));
         webDriver = new ChromeDriver(options);
         webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-
     }
 
     public static void login() {
@@ -47,7 +47,19 @@ public class BaseTest {
         Assertions.assertNotEquals("https://github.com/login", webDriver.getCurrentUrl());
     }
 
-    @AfterAll
+    @AfterEach
+    public void checkBrowser() {
+        List<LogEntry> allLogRows = webDriver.manage().logs().get(LogType.BROWSER).getAll();
+         if(!allLogRows.isEmpty()) {
+            if (allLogRows.size() > 0) {
+                allLogRows.forEach(logEntry -> {
+                    System.out.println(logEntry.getMessage());
+                });
+            }
+         }
+    }
+
+        @AfterAll
     static void exit() {
         webDriver.manage().deleteAllCookies();
         webDriver.quit();

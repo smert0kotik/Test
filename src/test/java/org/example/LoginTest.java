@@ -1,5 +1,6 @@
 package org.example;
 
+import io.qameta.allure.Description;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ public class LoginTest extends BaseTest {
     }
 
     @Test
+    @Description("Авторизация")
     void loginTest() {
         BaseTest.login();
         Assertions.assertNotEquals("https://github.com/login", webDriver.getCurrentUrl());
